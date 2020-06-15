@@ -59,3 +59,54 @@ const selectCity = (event, input, list) => {
     list.textContent = "";
   }
 };
+
+const createCard = (data) => {
+  const ticket = document.createElement("article");
+  ticket.classList.add("ticket");
+
+  let deep = "";
+
+  if (data) {
+    deep = `
+        <h3 class="agent" >${data.gate}</h3>
+        <div class="ticket__wrapper">
+            <div class="left-side">
+                <a href="https://www.aviasales.ua/search/SVX2905KGD1" class="button button__buy">Купить за ${data.value} UAH</a>
+            </div>
+
+            <div class="right-side">
+                <div class="block-left">
+                    <div class="city__from">Вылет из города
+                        <span class="city__name">${data.origin}</span>
+                    </div>
+                    <div class="date">${data.depart_date}</div>
+                </div>
+
+                <div class="block-right">
+                    <div class="changes">Без пересадок</div>
+                    <div class="city__to">Город назначения:
+                        <span class="city__name">${data.destination}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        `;
+  } else {
+    deep = "<h3>К сожалению, на текущую дату билетов не нашлось!</h3>";
+  }
+
+  ticket.insertAdjacentHTML("afterbegin", deep);
+
+  return ticket;
+};
+
+const renderCheapDay = (cheapTicket) => {
+  const ticket = createCard(cheapTicket[0]);
+  cheapestTicket.append(ticket);
+  console.log(ticket);
+};
+
+const renderCheapYear = (cheapTickets) => {
+  cheapTickets.sort((a, b) => a.value - b.value);
+  console.log(cheapTickets);
+};
