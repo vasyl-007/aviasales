@@ -9,7 +9,8 @@ const cheapestTicket = document.getElementById("cheapest-ticket");
 const otherCheapTickets = document.getElementById("other-cheap-tickets");
 
 // data
-const citiesApi = "http://api.travelpayouts.com/data/ru/cities.json";
+// const citiesApi = "http://api.travelpayouts.com/data/ru/cities.json";
+const citiesApi = "http://api.travelpayouts.com/data/uk/cities.json";
 const proxy = "https://cors-anywhere.herokuapp.com";
 const API_KEY = "4cd88cac72f7bf1405921eb58af981ae";
 const calendar = "http://min-prices.aviasales.ru/calendar_preload";
@@ -171,8 +172,13 @@ dropdownCitiesTo.addEventListener("click", (event) => {
 
 formSearch.addEventListener("submit", (event) => {
   event.preventDefault();
-  cheapestTicket.textContent = "";
-  otherCheapTickets.textContent = "";
+  cheapestTicket.innerHTML = "<h2>Самый дешёвый билет на выбранную дату</h2>";
+  otherCheapTickets.innerHTML = "<h2>Самый дешёвый билет на другие даты</h2>";
+  //   cheapestTicket.insertAdjacentHTML("beforeend", "<h2>Самый дешёвый билет на выбранную дату</h2>");
+  //   otherCheapTickets.insertAdjacentHTML(
+  //     "beforeend",
+  //     "<h2>Самый дешёвый билет на другие даты</h2>"
+  //   );
 
   const cityFrom = city.find((item) => {
     return inputCitiesFrom.value === item.name;
