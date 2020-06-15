@@ -60,6 +60,18 @@ const selectCity = (event, input, list) => {
   }
 };
 
+const getNameCity = (code) => {
+  const objCity = city.find((item) => item.code === code);
+};
+
+const getChanges = (n) => {
+  if (n) {
+    return n === 1 ? "С одной пересадкой" : "С двумя пересадками";
+  } else {
+    return "Без пересадок";
+  }
+};
+
 const createCard = (data) => {
   const ticket = document.createElement("article");
   ticket.classList.add("ticket");
