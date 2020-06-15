@@ -62,6 +62,18 @@ const selectCity = (event, input, list) => {
 
 const getNameCity = (code) => {
   const objCity = city.find((item) => item.code === code);
+  console.log(objCity);
+  return objCity.name;
+};
+
+const getDate = (date) => {
+  return new Date(date).toLocaleString("ru", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+  });
 };
 
 const getChanges = (n) => {
@@ -83,13 +95,17 @@ const createCard = (data) => {
         <h3 class="agent" >${data.gate}</h3>
         <div class="ticket__wrapper">
             <div class="left-side">
-                <a href="https://www.aviasales.ua/search/SVX2905KGD1" class="button button__buy">Купить за ${data.value} UAH</a>
+                <a href="https://www.aviasales.ua/search/SVX2905KGD1" class="button button__buy">Купить за ${
+                  data.value
+                } UAH</a>
             </div>
 
             <div class="right-side">
                 <div class="block-left">
                     <div class="city__from">Вылет из города
-                        <span class="city__name">${data.origin}</span>
+                        <span class="city__name">${getNameCity(
+                          data.origin
+                        )}</span>
                     </div>
                     <div class="date">${data.depart_date}</div>
                 </div>
@@ -97,7 +113,9 @@ const createCard = (data) => {
                 <div class="block-right">
                     <div class="changes">Без пересадок</div>
                     <div class="city__to">Город назначения:
-                        <span class="city__name">${data.destination}</span>
+                        <span class="city__name">${getNameCity(
+                          data.destination
+                        )}</span>
                     </div>
                 </div>
             </div>
@@ -122,3 +140,78 @@ const renderCheapYear = (cheapTickets) => {
   cheapTickets.sort((a, b) => a.value - b.value);
   console.log(cheapTickets);
 };
+
+const renderCheap = (data, date) => {
+  const cheapTicketYear = JSON.parse(data).best_prices;
+
+  const cheapTicketDay = cheapTicketYear.filter((item) => {
+    return item.depart_date === date;
+  });
+
+  renderCheapDay(cheapTicketDay);
+  renderCheapYear(cheapTicketYear);
+};
+
+// Event handlers
+inputCitiesFrom.addEventListener("input", () => {
+  showCity(inputCitiesFrom, dropdownCitiesFrom);
+});
+
+inputCitiesTo.addEventListener("input", () => {
+  showCity(inputCitiesTo, dropdownCitiesTo);
+});
+
+dropdownCitiesFrom.addEventListener("click", (event) => {
+  selectCity(event, inputCitiesFrom, dropdownCitiesFrom);
+});
+
+dropdownCitiesTo.addEventListener("click", (event) => {
+  selectCity(event, inputCitiesTo, dropdownCitiesTo);
+});
+
+formSearch.addEventListener("submit", (event) => {
+  event.preventDefault();
+
+  const cityFrom = city.find((item) => {
+    return inputCitiesFrom.value === item.name;
+  });
+
+  const cityTo = city.find((item) => {
+    return inputCitiesTo.value === item.name;
+  });
+
+  const formData = {
+    from: cityFrom,
+    to: cityTo,
+    when: inputDateDepart.value,
+  };
+
+  if (formData.from && formData.to) {
+    const requestData =
+      `?depart_date=${formData.when}&origin=${formData.from.code}` +
+      `&destination=${formData.to.code}&one_way=true`;
+
+    getData(calendar + requestData, (data) => {
+      renderCheap(data, formData.when);
+    });
+  } else {
+    alert("Введите корректное название города!");
+  }
+});
+
+// invoke functions
+getData(proxy + citiesApi, (data) => {
+  city = JSON.parse(data).filter((item) => item.name);
+
+  city.sort((a, b) => {
+    if (a.name > b.name) {
+      return 1;
+    }
+    if (a.name < b.name) {
+      return -1;
+    }
+    return 0;
+  });
+
+  console.log(city);
+});
